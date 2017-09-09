@@ -39,4 +39,12 @@ defmodule CooltWeb.UserController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def auth(conn, %{"email" => email, "password" => password}) do
+    case Accounts.auth_user(%{email: email, password: password}) do
+      {:ok, auth} ->
+        render(conn, "auth.json", auth)
+    end
+  end
+
 end

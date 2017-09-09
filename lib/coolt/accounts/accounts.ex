@@ -101,4 +101,20 @@ defmodule Coolt.Accounts do
   def change_user(%User{} = user) do
     User.changeset(user, %{})
   end
+  @doc """
+  Returns data if user is in database
+
+  ## Examples
+
+      iex> auth_user(user)
+      {:ok, %User{}}
+
+      
+      iex> auth_user(user)
+      {:error, "User not found"}
+  """
+  def auth_user(%{email: email, password: password}) do
+    {:ok, %User{}}
+  end
+
 end

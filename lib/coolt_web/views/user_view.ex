@@ -17,4 +17,8 @@ defmodule CooltWeb.UserView do
       email: user.email,
       password: user.password}
   end
+
+  def render("auth.json", auth) do
+    %{auth: auth}
+  end
 end
