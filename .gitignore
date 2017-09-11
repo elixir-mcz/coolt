@@ -57,3 +57,5 @@ node_modules/
 /rel
 
 # End of https://www.gitignore.io/api/code,elixir,phoenix
+
+env.sh
