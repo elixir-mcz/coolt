@@ -5,7 +5,7 @@ defmodule Coolt.Accounts do
 
   import Ecto.Query, warn: false
   alias Coolt.Repo
-
+  alias Ueberauth.Auth
   alias Coolt.Accounts.User
 
   @doc """
@@ -102,19 +102,52 @@ defmodule Coolt.Accounts do
     User.changeset(user, %{})
   end
   @doc """
-  Returns data if user is in database
+  This function find or create data in db for the auth
 
   ## Examples
 
-      iex> auth_user(user)
-      {:ok, %User{}}
+      iex> find_or_create(auth)
+      {:ok, %Auth{}}
 
       
-      iex> auth_user(user)
+      iex> find_or_create(auth)
       {:error, "User not found"}
   """
-  def auth_user(%{email: email, password: password}) do
-    {:ok, %User{}}
+  def find_or_create(%Auth{provider: :identity} = auth) do
+    IO.inspect auth
+    {:ok, basic_info(auth)}
   end
 
+  def find_or_create(%Auth{} = auth) do
+    {:ok, basic_info(auth)}
+  end
+
+  def find_or_create(%User{} = user) do
+    {:ok, user}
+  end
+ @doc """
+  This function return basic info data of auth user
+
+  ## Examples
+
+      iex> basic_info(auth)
+      %{id: auth.uid, name: name_from_auth(auth), avatar: auth.info.image}
+  """
+  defp basic_info(auth) do
+    %{id: auth.uid, name: name_from_auth(auth), avatar: auth.info.image}
+  end
+
+  defp name_from_auth(auth) do
+    if auth.info.name do
+      auth.info.name
+    else
+      name = [auth.info.first_name, auth.info.last_name]
+      |> Enum.filter(&(&1 != nil and &1 != ""))
+
+      cond do
+        length(name) == 0 -> auth.info.nickname
+        true -> Enum.join(name, " ")
+      end
+    end
+  end
 end

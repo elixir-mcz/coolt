@@ -19,6 +19,15 @@ defmodule CooltWeb.Router do
     get "/", PageController, :index
   end
 
+  scope "/auth", CooltWeb do
+    pipe_through [:browser]
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+    post "/:provider/callback", AuthController, :callback
+    delete "/logout", AuthController, :delete
+  end
+
   scope "/api", CooltWeb do
     pipe_through :api
     resources "/users", UserController, except: [:new, :edit]
