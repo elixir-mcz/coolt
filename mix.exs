@@ -20,7 +20,7 @@ defmodule Coolt.Mixfile do
   def application do
     [
       mod: {Coolt.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :ueberauth_google]
     ]
   end
 
@@ -41,7 +41,8 @@ defmodule Coolt.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"}, 
-      {:guardian, "~> 1.0-beta"}
+      {:guardian, "~> 1.0-beta"},
+      {:ueberauth_google, "~> 0.5"}
     ]
   end
 
