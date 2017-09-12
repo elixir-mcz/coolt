@@ -114,27 +114,39 @@ defmodule Coolt.Accounts do
       {:error, "User not found"}
   """
   def find_or_create(%Auth{provider: :identity} = auth) do
-    IO.inspect auth
-    {:ok, basic_info(auth)}
+   case Repo.get_by(User, email: auth.info.email) do
+      %User{} = user ->
+        {:ok, user}
+       nil -> 
+        basic_info(auth)
+        |> register_new_user()
+    end
   end
 
-  def find_or_create(%Auth{} = auth) do
-    {:ok, basic_info(auth)}
+  def find_or_create(%Auth{} = auth) do # TODO: Maybe change this for one function
+    case Repo.get_by(User, email: auth.info.email) do
+      %User{} = user ->
+        {:ok, user}
+      nil -> 
+        basic_info(auth)
+        |> register_new_user()
+    end
   end
 
-  def find_or_create(%User{} = user) do
+  def find_or_create(%User{} = user) do # TODO: implement standard auth
     {:ok, user}
   end
+
  @doc """
   This function return basic info data of auth user
 
   ## Examples
 
       iex> basic_info(auth)
-      %{id: auth.uid, name: name_from_auth(auth), avatar: auth.info.image}
+      %{name: name_from_auth(auth), avatar: auth.info.image, email: auth.info.email}
   """
   defp basic_info(auth) do
-    %{id: auth.uid, name: name_from_auth(auth), avatar: auth.info.image}
+    %User{name: name_from_auth(auth), avatar: auth.info.image, email: auth.info.email}
   end
 
   defp name_from_auth(auth) do
@@ -149,5 +161,10 @@ defmodule Coolt.Accounts do
         true -> Enum.join(name, " ")
       end
     end
+  end
+
+  defp register_new_user(%User{} = user) do
+    user
+    |> Repo.insert()
   end
 end
