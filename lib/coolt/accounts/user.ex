@@ -18,6 +18,7 @@ defmodule Coolt.Accounts.User do
   def changeset(%User{} = user, attrs) do
     user
     |> cast(attrs, [:uuid, :name, :avatar, :email, :password])
+    |> validate_format(:email, ~r/@/)
     |> validate_required([:uuid, :name, :avatar, :email, :password])
   end
 end
