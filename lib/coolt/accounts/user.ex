@@ -7,6 +7,7 @@ defmodule Coolt.Accounts.User do
   schema "users" do
     field :email, :string
     field :name, :string
+    field :avatar, :string
     field :password, :string
     field :uuid, Ecto.UUID
 
@@ -16,7 +17,7 @@ defmodule Coolt.Accounts.User do
   @doc false
   def changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:uuid, :name, :email, :password])
-    |> validate_required([:uuid, :name, :email, :password])
+    |> cast(attrs, [:uuid, :name, :avatar, :email, :password])
+    |> validate_required([:uuid, :name, :avatar, :email, :password])
   end
 end

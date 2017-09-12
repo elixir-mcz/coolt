@@ -5,6 +5,7 @@ defmodule Coolt.Repo.Migrations.CreateUsers do
     create table(:users) do
       add :uuid, :uuid
       add :name, :string
+      add :avatar, :string
       add :email, :string
       add :password, :string
 
