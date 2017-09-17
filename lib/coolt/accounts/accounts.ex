@@ -145,7 +145,11 @@ defmodule Coolt.Accounts do
       iex> basic_info(auth)
       %{name: name_from_auth(auth), avatar: auth.info.image, email: auth.info.email}
   """
-  defp basic_info(auth) do
+  def basic_info(%User{} = user, :basic) do
+    %{name: user.name, avatar: user.avatar, email: user.email}
+  end
+
+  def basic_info(auth) do
     %User{name: name_from_auth(auth), avatar: auth.info.image, email: auth.info.email}
   end
 
