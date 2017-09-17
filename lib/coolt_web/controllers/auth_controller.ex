@@ -33,11 +33,16 @@ defmodule CooltWeb.AuthController do
         jwt = Coolt.Guardian.Plug.current_token(conn)
         claims = Coolt.Guardian.Plug.current_claims(conn)
         exp = Map.get(claims, "exp")
+        groups = Accounts.groups_by_user(user)
+
         conn
           # |> put_resp_header("authorization", "Bearer #{jwt}") # TODO: Why this not working??
           # |> put_resp_header("x-expires", exp)
           |> put_session(:current_user, user)
-          |> render "auth.json", user: user, jwt: jwt, exp: exp
+          |> render "auth.json", user: user,
+                                 jwt: jwt,
+                                 exp: exp,
+                                 groups: groups
      
       {:error, reason} ->
         conn

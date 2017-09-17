@@ -7,6 +7,7 @@ defmodule Coolt.Accounts do
   alias Coolt.Repo
   alias Ueberauth.Auth
   alias Coolt.Accounts.User
+  alias Coolt.Accounts.GroupImages
 
   @doc """
   Returns the list of users.
@@ -266,5 +267,49 @@ defmodule Coolt.Accounts do
   """
   def change_group(%Group{} = group) do
     Group.changeset(group, %{})
+  end
+  @doc """
+  Gets groups by user.
+
+  Raises `Ecto.NoResultsError` if the Group does not exist.
+
+  ## Examples
+
+      iex> groups_by_user(user)
+      %{
+        groups_joined: [%Group{}, %Group{}],
+        groups_user_owner: [%Group{}, %Group{}]
+      }
+
+  """
+  def groups_by_user(%User{} = user) do
+    groups_user_owner = from(
+      g in Group,
+      where: g.user_id == ^user.id,
+          left_join: i in GroupImages,
+            on: i.group_id == g.id,
+            on: i.default_image == true,
+              select: {g.id, g.title, g.description, i.url})
+      |> Repo.all()
+    case {groups_user_owner, 'a'} do
+      {[_] = groups_user_owner, _} ->
+        %{
+          groups_user_owner: groups_user_owner,
+          groups_joined: []
+        }
+
+      {%Group{} = group_user_owner, _} ->
+        IO.inspect group_user_owner
+        %{
+          groups_user_owner: [group_user_owner],
+          groups_joined: []
+        }
+
+      {nil, _} ->
+      %{
+          groups_user_owner: [],
+          groups_joined: []
+        }
+      end
   end
 end
