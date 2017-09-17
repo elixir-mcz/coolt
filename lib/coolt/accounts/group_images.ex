@@ -1,7 +1,7 @@
-defmodule Coolt.Accounts.GroupImages do
+defmodule Coolt.Accounts.GroupImage do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Coolt.Accounts.GroupImages
+  alias Coolt.Accounts.GroupImage
 
 
   schema "groups_images" do
@@ -14,7 +14,7 @@ defmodule Coolt.Accounts.GroupImages do
   end
 
   @doc false
-  def changeset(%GroupImages{} = group_images, attrs) do
+  def changeset(%GroupImage{} = group_images, attrs) do
     group_images
     |> cast(attrs, [:url, :status])
     |> validate_required([:url, :status])

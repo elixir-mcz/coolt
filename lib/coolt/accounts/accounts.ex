@@ -7,7 +7,7 @@ defmodule Coolt.Accounts do
   alias Coolt.Repo
   alias Ueberauth.Auth
   alias Coolt.Accounts.User
-  alias Coolt.Accounts.GroupImages
+  alias Coolt.Accounts.GroupImage
 
   @doc """
   Returns the list of users.
@@ -286,25 +286,22 @@ defmodule Coolt.Accounts do
     groups_user_owner = from(
       g in Group,
       where: g.user_id == ^user.id,
-          left_join: i in GroupImages,
-            on: i.group_id == g.id,
-            on: i.default_image == true,
-              select: {g.id, g.title, g.description, i.url})
-      |> Repo.all()
+      left_join: i in GroupImage,
+        on: i.group_id == g.id,
+        on: i.default_image == true,
+      select: %{
+        id: g.id, 
+        title: g.title,
+        description: g.description,
+        default_image: i.url # fragment("coalesce(?, ?)", i.url, "valor_default")
+      }) |> Repo.all()
+
     case {groups_user_owner, 'a'} do
       {[_] = groups_user_owner, _} ->
         %{
           groups_user_owner: groups_user_owner,
           groups_joined: []
         }
-
-      {%Group{} = group_user_owner, _} ->
-        IO.inspect group_user_owner
-        %{
-          groups_user_owner: [group_user_owner],
-          groups_joined: []
-        }
-
       {nil, _} ->
       %{
           groups_user_owner: [],
