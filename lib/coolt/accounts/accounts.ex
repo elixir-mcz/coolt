@@ -7,6 +7,8 @@ defmodule Coolt.Accounts do
   alias Coolt.Repo
   alias Ueberauth.Auth
   alias Coolt.Accounts.User
+  alias Coolt.Accounts.UserGroup
+  alias Coolt.Accounts.Group
   alias Coolt.Accounts.GroupImage
 
   @doc """
@@ -173,8 +175,6 @@ defmodule Coolt.Accounts do
     |> Repo.insert()
   end
 
-  alias Coolt.Accounts.Group
-
   @doc """
   Returns the list of groups.
 
@@ -283,9 +283,8 @@ defmodule Coolt.Accounts do
 
   """
   def groups_by_user(%User{} = user) do
-    groups_user_owner = from(
+    group_query_with_img = from(
       g in Group,
-      where: g.user_id == ^user.id,
       left_join: i in GroupImage,
         on: i.group_id == g.id,
         on: i.default_image == true,
@@ -293,20 +292,23 @@ defmodule Coolt.Accounts do
         id: g.id, 
         title: g.title,
         description: g.description,
-        default_image: i.url # fragment("coalesce(?, ?)", i.url, "valor_default")
-      }) |> Repo.all()
+        default_image: i.url
+      })
 
-    case {groups_user_owner, 'a'} do
-      {[_] = groups_user_owner, _} ->
-        %{
-          groups_user_owner: groups_user_owner,
-          groups_joined: []
-        }
-      {nil, _} ->
-      %{
-          groups_user_owner: [],
-          groups_joined: []
-        }
-      end
+    groups_user_owner = from(g in group_query_with_img,  where: g.user_id == ^user.id) |> Repo.all()
+
+    groups_joined_list = from( # TODO: convert this in one unique query
+      ug in UserGroup,
+      select: ug.group_id,
+      where: ug.user_id == ^user.id,
+    ) |> Repo.all()
+
+    groups_joined = from(g in group_query_with_img, where: g.id in ^groups_joined_list)|> Repo.all()
+
+    %{
+      groups_user_owner: groups_user_owner,
+      groups_joined: groups_joined
+    }
+     
   end
 end
