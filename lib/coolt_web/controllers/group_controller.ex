@@ -6,8 +6,14 @@ defmodule CooltWeb.GroupController do
 
   action_fallback CooltWeb.FallbackController
 
-  def index(conn, _params) do
-    groups = Accounts.list_groups(location)
+  def index(conn, _params) do # get current user request by auth token and return
+    user = %{id: 1}
+    groups = Accounts.list_groups({
+      String.to_float(_params["lng"]),
+      String.to_float(_params["lat"]),
+      String.to_integer(_params["radius"]),
+      user
+      })
     render(conn, "index.json", groups: groups)
   end
 

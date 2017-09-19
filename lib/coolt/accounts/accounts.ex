@@ -176,16 +176,31 @@ defmodule Coolt.Accounts do
   end
 
   @doc """
-  Returns the list of groups.
+  Returns the list of groups by location.
 
   ## Examples
 
-      iex> list_groups()
+      iex> list_groups({lng, lat})
       [%Group{}, ...]
 
   """
-  def list_groups do
-    Repo.all(Group)
+  def list_groups({lng, lat, radius_in_m, user}) do
+      # from(g in Group,
+      # left_join: ug in UserGroup,
+      #       on: g.id == ug.group_id and ug.user_id == 1,
+      #   where: 
+      #     fragment("ST_DWithin(ST_Point(?, ?), ST_MakePoint(?, ?), ?)", g.lng, g.lat, ^lng, ^lat, ^radius_in_m),
+      #   where:
+      #      ug.group_id is NULL)
+      # |> Repo.all()
+
+      groups_joined_list = from( # TODO: convert this in one unique query
+      ug in UserGroup,
+      select: ug.group_id,
+      where: ug.user_id == ^user.id) |> Repo.all()
+
+      from(g in Group, where: g.id not in ^groups_joined_list) |> Repo.all()
+
   end
 
   @doc """

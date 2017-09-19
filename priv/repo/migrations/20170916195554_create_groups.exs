@@ -6,8 +6,8 @@ defmodule Coolt.Repo.Migrations.CreateGroups do
       add :title, :string
       add :description, :text
       add :user_id, references(:users, on_delete: :nothing)
+      add :lng, :float
       add :lat, :float
-      add :long, :float
 
       timestamps()
     end
