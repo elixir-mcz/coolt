@@ -8,6 +8,7 @@ defmodule Coolt.Accounts.Group do
     field :description, :string
     field :title, :string
     field :user_id, :id
+    field :location, :string
 
     timestamps()
   end
@@ -15,7 +16,7 @@ defmodule Coolt.Accounts.Group do
   @doc false
   def changeset(%Group{} = group, attrs) do
     group
-    |> cast(attrs, [:title, :description])
-    |> validate_required([:title, :description])
+    |> cast(attrs, [:title, :location, :description])
+    |> validate_required([:title, :location, :description])
   end
 end
