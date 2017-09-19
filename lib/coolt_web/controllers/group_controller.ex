@@ -7,7 +7,7 @@ defmodule CooltWeb.GroupController do
   action_fallback CooltWeb.FallbackController
 
   def index(conn, _params) do
-    groups = Accounts.list_groups()
+    groups = Accounts.list_groups(location)
     render(conn, "index.json", groups: groups)
   end
 
