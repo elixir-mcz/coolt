@@ -7,6 +7,8 @@ defmodule CooltWeb.GroupController do
   action_fallback CooltWeb.FallbackController
 
   def index(conn, _params) do # get current user request by auth token and return
+    IO.inspect conn
+    #{:ok, claims} = Coolt.Guardian.decode_and_verify(_params[""])
     user = %{id: 1}
     groups = Accounts.list_groups({
       String.to_float(_params["lng"]),
@@ -15,6 +17,15 @@ defmodule CooltWeb.GroupController do
       user
       })
     render(conn, "index.json", groups: groups)
+  end
+
+  def list_groups_by_radius(conn, _params) do # get current user request by auth token and return
+
+    {:ok, resource, claims} = Coolt.Guardian.resource_from_token(hd get_req_header(conn, "authorization"))
+    user = Accounts.get_user!(resource)
+    groups = Accounts.list_groups({_params["lng"], _params["lat"], _params["radius"], user})
+    render(conn, "index.json", groups: groups)
+
   end
 
   def create(conn, %{"group" => group_params}) do
