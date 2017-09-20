@@ -36,8 +36,6 @@ defmodule CooltWeb.AuthController do
         groups = Accounts.groups_by_user(user)
 
         conn
-          # |> put_resp_header("authorization", "Bearer #{jwt}") # TODO: Why this not working??
-          # |> put_resp_header("x-expires", exp)
           |> put_session(:current_user, user)
           |> render "auth.json", user: user,
                                  jwt: jwt,
