@@ -42,7 +42,8 @@ defmodule Coolt.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"}, 
       {:guardian, "~> 1.0-beta"},
-      {:ueberauth_google, "~> 0.5"}
+      {:ueberauth_google, "~> 0.5"},
+      {:geo, "~> 2.0"}
     ]
   end
 

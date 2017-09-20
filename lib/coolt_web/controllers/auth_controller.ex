@@ -29,10 +29,19 @@ defmodule CooltWeb.AuthController do
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
     case Accounts.find_or_create(auth) do
       {:ok, user} ->
+        conn = Coolt.Guardian.Plug.sign_in(conn, user)
+        jwt = Coolt.Guardian.Plug.current_token(conn)
+        claims = Coolt.Guardian.Plug.current_claims(conn)
+        exp = Map.get(claims, "exp")
+        groups = Accounts.groups_by_user(user)
+
         conn
-        |> put_flash(:info, "Successfully authenticated.")
-        |> put_session(:current_user, user)
-        |> redirect(to: "/")
+          |> put_session(:current_user, user)
+          |> render "auth.json", user: user,
+                                 jwt: jwt,
+                                 exp: exp,
+                                 groups: groups
+     
       {:error, reason} ->
         conn
         |> put_flash(:error, reason)
