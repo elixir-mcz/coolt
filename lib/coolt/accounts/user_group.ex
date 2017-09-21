@@ -7,6 +7,7 @@ defmodule Coolt.Accounts.UserGroup do
   schema "users_groups" do
     field :user_id, :id
     field :group_id, :id
+    field :status, :boolean
 
     timestamps()
   end
@@ -14,7 +15,7 @@ defmodule Coolt.Accounts.UserGroup do
   @doc false
   def changeset(%UserGroup{} = user_group, attrs) do
     user_group
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [:status])
+    |> validate_required([:status])
   end
 end
