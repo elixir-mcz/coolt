@@ -16,7 +16,6 @@ defmodule CooltWeb.Router do
   scope "/", CooltWeb do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
   end
 
   scope "/auth", CooltWeb do
