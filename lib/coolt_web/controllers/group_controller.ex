@@ -8,10 +8,12 @@ defmodule CooltWeb.GroupController do
 
   def list_groups_by_radius(conn, _params) do 
 
-    {:ok, resource, claims} = Coolt.Guardian.resource_from_token(hd get_req_header(conn, "authorization"))
-    user = Accounts.get_user!(resource)
-    groups = Accounts.list_groups({_params["lng"], _params["lat"], _params["radius"], user})
-    render(conn, "index.json", groups: groups)
+    case Coolt.Guardian.resource_from_token(hd get_req_header(conn, "authorization")) do
+      {:ok, resource, claims} ->
+        user = Accounts.get_user!(resource)
+        groups = Accounts.list_groups({_params["lng"], _params["lat"], _params["radius"], user})
+        render(conn, "index.json", groups: groups)
+    end
 
   end
 
