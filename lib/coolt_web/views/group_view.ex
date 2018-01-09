@@ -15,4 +15,8 @@ defmodule CooltWeb.GroupView do
       title: group.title,
       description: group.description}
   end
+  def render("join.json", %{user_group: user_group}) do
+    %{group_joined_id: user_group.group_id,
+      status: user_group.status}
+  end
 end

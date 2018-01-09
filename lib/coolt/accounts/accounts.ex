@@ -195,14 +195,19 @@ defmodule Coolt.Accounts do
       # |> Repo.all()
 
       groups_joined_list = from( # TODO: convert this in one unique query
-      ug in UserGroup,
-      select: ug.group_id,
-      where: ug.user_id == ^user.id) |> Repo.all()
+        ug in UserGroup,
+        select: ug.group_id,
+        where: ug.user_id == ^user.id) |> Repo.all()
 
       from(g in Group, where: g.id not in ^groups_joined_list) |> Repo.all()
 
   end
 
+
+  def join_group(%UserGroup{} = user_group) do
+   user_group
+    |> Repo.insert()
+  end
   @doc """
   Gets a single group.
 
@@ -315,7 +320,7 @@ defmodule Coolt.Accounts do
     groups_joined_list = from( # TODO: convert this in one unique query
       ug in UserGroup,
       select: ug.group_id,
-      where: ug.user_id == ^user.id,
+      where: ug.user_id == ^user.id and ug.status == true,
     ) |> Repo.all()
 
     groups_joined = from(g in group_query_with_img, where: g.id in ^groups_joined_list)|> Repo.all()

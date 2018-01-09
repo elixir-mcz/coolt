@@ -16,7 +16,6 @@ defmodule CooltWeb.Router do
   scope "/", CooltWeb do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
   end
 
   scope "/auth", CooltWeb do
@@ -33,6 +32,7 @@ defmodule CooltWeb.Router do
     resources "/users", UserController, except: [:new, :edit]
 
     post "/groups", GroupController, :list_groups_by_radius
+    post "/groups/join", GroupController, :join_group
     resources "/groups", GroupController, except: [:new, :edit]
   end
 end
